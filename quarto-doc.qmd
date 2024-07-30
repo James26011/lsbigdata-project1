@@ -1,0 +1,115 @@
+---
+title: "LS빅데이터 스쿨 3일차"
+author: "이태현"
+format: html
+editor: visual
+jupyter: python3
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{python}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{python}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+---
+# 제목 1
+## 제목 2
+### 제목 3
+#### 제목 4
+샵의 개수는 1~4이며 1이 가장 크다.
+
+__볼드체__
+
+_기울임 텍스트_
+
+~~취소선 텍스트~~
+
+1. 항목1
+1. 항목2
+1. 항목3
+계속 1로 넘버링 해도 된다.
+
+- 항목1
+- 항목2
+- 항목3
+
+[슬기로운 통계생활](https://statisticsplaybook.com/)
+
+이미지
+- 결과
+![강아지|100x100](C:\Users\USER\Documents\LS빅데이터스쿨\lsbigdata-project1/img/img1.jpg)
+
+
+
+> 토익 900++ 만들자
+
+\- TeaHyun Lee, 2024
+
+
+
+인라인 코드 `print("Hello World!")`
+
+코드 블록 1번 옆에 ` 이다.
+
+```{python}
+def greet():
+  print("Hello World!")
+```
+
+`단축키 ctrl + Alt + I` 누르면 바로 아래 블록 형성
+```{python}
+print("Hi")
+```
+코드 청크 실행 옵션
+옵션은 #| 로 시작한다.
+
+* echo 옵션: 코드를 문서에 보여줌
+* eval 옵션: 코드를 돌릴 것인가, 그냥 둘것인가를 결정
+```{python}
+#| echo: true
+#| eval: false
+1+1
+```
+
+이것은 간단한 각주[^1] 입니다.
+
+[^1]: 여기는 설명 텍스트
+
+
+각주 여러줄 달리는 경우[^2] 입니다.
+
+[^2]: 각주 첫줄
+  띄어쓰기 2번하면 여러 줄
+  
+### 해야 할 일들
+
+- [x] 화분 물 주기
+- [ ] 밀린 일기 작성
+
+# 수식 입력 방법
+
+* 인라인 수식: $ 하나로 감싸준다.(본문에 입력)
+* 디스플레이 수식: $ 2개로 감싸준다. (독립적인 문단)
+
+문장안에 숫자 $5^2$를 넣어보자.
+
+$$
+x^2 + y^2 = 5\sqrt{2}^{3}_{1}
+$$
+
