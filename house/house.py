@@ -1,7 +1,9 @@
 import pandas as pd
 
 house = pd.read_csv('house/train.csv')
+
 house
+
 house['SalePrice'].mean()
 
 sub = pd.read_csv('house/sample_submission.csv')
@@ -11,6 +13,7 @@ sub['SalePrice'] = house['SalePrice'].mean()
 sub
 
 sub.to_csv('./house/sub.csv', index = False)
+
 
 
 
@@ -86,3 +89,5 @@ sub_df
 sub_df.to_csv('./house/sub2.csv', index = False)
 
 # =================================================
+=======
+>>>>>>> 454bb7acca416ce1fad82d479b6776c75b2ee9a4
