@@ -16,13 +16,6 @@ sub.to_csv('./house/sub.csv', index = False)
 
 
 
-
-
-년도 평균을 구해서
-테스트 set의 집값을 예측
-
-21세기 전후 / 전이 더 싸다
-
 # 연도 범위, 평균 확인
 house['YearBuilt'].describe()
 
@@ -51,7 +44,7 @@ sub2 = sub.copy()
 sub2['SalePrice'] = new2['new_price']
 sub2.to_csv('./house/sub2.csv', index = False)
 
-# ==============이삭 ver============================
+# ==============이삭T ver============================
 house_train = pd.read_csv('house/train.csv')
 house_train = house_train[['Id','YearBuilt','SalePrice']]
 house_train.info()
@@ -88,6 +81,55 @@ sub_df
 
 sub_df.to_csv('./house/sub2.csv', index = False)
 
-# =================================================
-=======
->>>>>>> 454bb7acca416ce1fad82d479b6776c75b2ee9a4
+# =================시각화================================
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+house_train = pd.read_csv('house/train.csv')
+
+# LotArea(대지면적) -TotRmsAbvGrd(지상층 방개수)
+house_train = house_train[['LotArea','TotRmsAbvGrd','SalePrice']]
+
+house_train['LotArea'].isna().sum()
+house_train['LotArea'].describe()
+
+house_train['TotRmsAbvGrd'].isna().sum()
+house_train['TotRmsAbvGrd'].describe() #최소값 2, 최대값 14
+house_train['TotRmsAbvGrd'].value_counts().sort_index()
+
+house_train['SalePrice'].isna().sum()
+
+
+
+# 데이터 준비
+tot = house_train.groupby('TotRmsAbvGrd') \
+           .agg(mean_price=('SalePrice', 'mean'),
+                mean_area=('LotArea', 'mean'))
+
+# 그래프 그리기
+fig, ax1 = plt.subplots()
+# 첫 번째 y축 (mean_price)
+sns.lineplot(data=tot, x='TotRmsAbvGrd', y='mean_price', color='black', linestyle='-', ax=ax1)
+ax1.set_xlabel('TotRmsAbvGrd')
+ax1.set_ylabel('Mean_price', color='black')
+ax1.tick_params(axis='y', labelcolor='black')
+
+
+# 두 번째 y축 (mean_area)
+ax2 = ax1.twinx()  # 공유 x축을 가지는 두 번째 y축
+sns.lineplot(data=tot, x='TotRmsAbvGrd', y='mean_area', color='red', linestyle='-', ax=ax2)
+ax2.set_ylabel('Mean Area', color='red')
+ax2.tick_params(axis='y', labelcolor='red')
+
+# 그래프 제목 및 레이아웃 조정
+plt.title('Mean_price and Mean Area by Total Rooms Above Ground')
+fig.tight_layout()
+
+# 그래프 표시
+plt.show()
+plt.clf()
+
+house_train['TotRmsAbvGrd'].describe() #최소값 2, 최대값 14
+house_train['TotRmsAbvGrd'].value_counts().sort_index()
+
