@@ -1,4 +1,4 @@
-# !pip install plotly
+# pip install plotly
 
 import plotly.graph_objects as go
 import plotly.express as px
@@ -125,3 +125,6 @@ fig = go.Figure(
 )
 
 fig.show()
+
+
+

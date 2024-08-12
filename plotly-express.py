@@ -1,5 +1,5 @@
 # 데이터 패키지 설치
-# !pip install palmerpenguins
+# pip install palmerpenguins
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -77,6 +77,7 @@ fig.show()
 # =============================================================
 # 범주형 변수로 회귀분석 진행하기
 # 범주형 변수인 'species'를 더미 변수로 변환
+penguins
 penguins_dummies = pd.get_dummies(penguins, 
                                   columns=['species'],
                                   drop_first=False)
@@ -94,7 +95,14 @@ model.fit(x, y)
 model.coef_
 model.intercept_
 
+regline_y = model.predict(x)
+import matplotlib.pyplot as plt
+plt.scatter(x['bill_length_mm'], regline_y, s=1)
+plt.scatter(x['bill_length_mm'], y, color = 'black', s=1)
+plt.show()
+plt.clf()
 
 
+# y = 0.20044313 * bill_length - 1.93 * species_Chinstrap - 5.1 * species_Gentoo + 10.56
 
 

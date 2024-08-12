@@ -133,3 +133,11 @@ plt.clf()
 house_train['TotRmsAbvGrd'].describe() #최소값 2, 최대값 14
 house_train['TotRmsAbvGrd'].value_counts().sort_index()
 
+
+
+
+# ============================================
+
+
+new_house = pd.read_csv('./house/houseprice-with-lonlat.csv')
+new_house.columns
