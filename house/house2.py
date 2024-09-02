@@ -423,6 +423,6 @@ sub_df['SalePrice'] = pred_y
 sub_df
 
 
-sub_df.to_csv('./house/sub9.csv', index = False)
+sub_df.to_csv('./house/sub9.csv', index = True)
 
 

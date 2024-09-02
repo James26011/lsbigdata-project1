@@ -1,0 +1,529 @@
+---
+title: "팀플 개인 작업"
+author: "이태현"
+format: 
+    dashboard:
+        scrolling: true
+        logo: 'img2.jpg'
+        nav-buttons:
+            - icon: github
+              herf: https://github.com/James26011/lsbigdata-project1
+---
+# 페이지 1
+```{python}
+import pandas as pd
+import plotly.express as px
+import numpy as np
+ames = pd.read_csv('./data/house_df.csv')
+```
+
+```{python}
+tot_1st = ames.query('Second_Flr_SF == False') \
+               .agg(count =('Second_Flr_SF','count'))
+tot_1st = tot_1st['Second_Flr_SF'][0]
+
+tot_2nd = ames.query('Second_Flr_SF == True') \
+               .agg(count =('Second_Flr_SF','count'))
+tot_2nd = tot_2nd['Second_Flr_SF'][0]
+
+
+b1_1st = ames.query('Branch_Number == "Branch_1" & Second_Flr_SF == False') \
+               .agg(count =('Branch_Number','count'))
+b1_1st = b1_1st['Branch_Number'][0]
+
+b1_2nd = ames.query('Branch_Number == "Branch_1" & Second_Flr_SF == True') \
+               .agg(count =('Branch_Number','count'))
+b1_2nd = b1_2nd['Branch_Number'][0]
+
+b1_1 = f"{b1_1st} / {tot_1st}"
+b1_2 = f"{b1_2nd} / {tot_2nd}"
+```
+
+## Row 
+
+```{python}
+#| content: valuebox
+#| title: "1st Floor in Branch 1"
+dict(
+  icon = "house",
+  color = "#F7FEAE",
+  value = b1_1
+)
+```
+
+
+```{python}
+#| content: valuebox
+#| title: "2nd Floor in Branch 1"
+dict(
+  icon = "houses",
+  color = "#F7FEAE",
+  value = b1_2
+)
+```
+
+## Row 
+[Branch 1 지역]
+
+1층 집의 갯수와 2층 집의 갯수가 34채 차이로 비슷한 수치입니다.
+
+## Row
+
+```{python}
+import pandas as pd
+import plotly.graph_objects as go
+
+# Distance_m의 전체 평균 계산
+distance_mean = ames['Distance_m'].mean()
+
+# Branch_1의 평균 Distance_m 계산
+branch_1_mean = ames.query('Branch_Number == "Branch_1"')['Distance_m'].mean()
+
+# 막대그래프 그리기
+fig = go.Figure()
+
+fig = fig.add_trace(go.Bar(
+    x=[distance_mean, branch_1_mean],  # x축에 평균값을 설정
+    y=['Distance Mean', 'Branch_1 Mean'],  # y축에 레이블을 설정
+    orientation='h',  # 가로 막대그래프 설정
+    marker=dict(color=['#058092', '#9BD8A4']),  # 막대 색상 설정
+    text=[f"{distance_mean:,.2f}", f"{branch_1_mean:,.2f}"],  # 텍스트로 값 설정
+    textposition='inside',  # 텍스트 위치를 막대 안으로 설정
+    insidetextanchor='middle',  # 텍스트를 막대 가운데 정렬
+    textfont=dict(size=20)  # 텍스트 크기 설정
+))
+
+# 이모지 추가 (각각의 막대 끝에)
+fig = fig.add_annotation(
+    x=distance_mean,  # Distance Mean 막대의 끝에 이모지를 추가
+    y='Distance Mean',
+    text='🏃‍♂️',
+    showarrow=False,
+    xanchor='left',
+    yanchor='middle',
+    xshift=30,  # 막대 끝에서 약간 오른쪽에 이모지를 표시
+    font=dict(size=60)  # 이모지 크기 조절
+)
+
+fig = fig.add_annotation(
+    x=branch_1_mean,  # Branch_1 Mean 막대의 끝에 이모지를 추가
+    y='Branch_1 Mean',
+    text='🏃‍♂️',
+    showarrow=False,
+    xanchor='left',
+    yanchor='middle',
+    xshift=30,  # 막대 끝에서 약간 오른쪽에 이모지를 표시
+    font=dict(size=60)  # 이모지 크기 조절
+)
+
+# 그래프 레이아웃 설정
+fig = fig.update_layout(
+    title=dict(
+        text='Distance',
+        x=0.5,  # 타이틀을 그래프 가운데로 설정
+        y=0.95,  # 타이틀을 그래프 상단에 가깝게 설정
+        font=dict(size=35)  # 타이틀 폰트 크기를 35로 설정
+    ),
+    xaxis_title='Distance (m)',
+    yaxis_title='',
+    yaxis=dict(autorange="reversed"),  # y축 순서 뒤집기 (가로 막대그래프일 때)
+    bargap=0.6,  # 막대 사이 간격 설정
+    plot_bgcolor='white',  # 그래프 배경색을 흰색으로 설정
+    paper_bgcolor='white',  # 전체 배경색을 흰색으로 설정
+    margin=dict(t=100)  # 상단 여백을 100으로 설정
+)
+
+# 그래프 보여주기
+fig.show()
+```
+
+## Row
+IOWA 주립 대학교와 Ames 도시의 주택이 떨어진 거리의 평균은 5.57km 입니다.
+
+Branch 1 지역의 주택이 대학교와 떨어진 평균 거리는 5.93km 입니다.
+Ames 도시 주택에 비해 평균 363m 더 떨어진 지역입니다.
+
+
+# 페이지 2
+
+```{python}
+tot_1st = ames.query('Second_Flr_SF == False') \
+               .agg(count =('Second_Flr_SF','count'))
+tot_1st = tot_1st['Second_Flr_SF'][0]
+
+tot_2nd = ames.query('Second_Flr_SF == True') \
+               .agg(count =('Second_Flr_SF','count'))
+tot_2nd = tot_2nd['Second_Flr_SF'][0]
+
+
+b2_1st = ames.query('Branch_Number == "Branch_2" & Second_Flr_SF == False') \
+               .agg(count =('Branch_Number','count'))
+b2_1st = b2_1st['Branch_Number'][0]
+
+b2_2nd = ames.query('Branch_Number == "Branch_2" & Second_Flr_SF == True') \
+               .agg(count =('Branch_Number','count'))
+b2_2nd = b2_2nd['Branch_Number'][0]
+
+b2_1 = f"{b2_1st} / {tot_1st}"
+b2_2 = f"{b2_2nd} / {tot_2nd}"
+```
+
+## Row
+
+```{python}
+#| content: valuebox
+#| title: "1st Floor in Branch 2"
+dict(
+  icon = "house",
+  color = "#F7FEAE",
+  value = b2_1
+)
+```
+
+```{python}
+#| content: valuebox
+#| title: "2nd Floor in Branch 2"
+dict(
+  icon = "houses",
+  color = "#F7FEAE",
+  value = b2_2
+)
+```
+
+## Row 
+[Branch 2 지역]
+
+1층 집의 갯수와 2층 집의 갯수가 170채 차이로 1층 집이 더 많습니다.
+
+## Row
+
+```{python}
+import pandas as pd
+import plotly.graph_objects as go
+
+# Distance_m의 전체 평균 계산
+distance_mean = ames['Distance_m'].mean()
+
+# Branch_2의 평균 Distance_m 계산
+branch_2_mean = ames.query('Branch_Number == "Branch_2"')['Distance_m'].mean()
+
+# 막대그래프 그리기
+fig = go.Figure()
+
+fig = fig.add_trace(go.Bar(
+    x=[distance_mean, branch_2_mean],  # x축에 평균값을 설정
+    y=['Distance Mean', 'Branch_2 Mean'],  # y축에 레이블을 설정
+    orientation='h',  # 가로 막대그래프 설정
+    marker=dict(color=['#058092', '#9BD8A4']),  # 막대 색상 설정
+    text=[f"{distance_mean:,.2f}", f"{branch_2_mean:,.2f}"],  # 텍스트로 값 설정
+    textposition='inside',  # 텍스트 위치를 막대 안으로 설정
+    insidetextanchor='middle',  # 텍스트를 막대 가운데 정렬
+    textfont=dict(size=20)  # 텍스트 크기 설정
+))
+
+# 이모지 추가 (각각의 막대 끝에)
+fig = fig.add_annotation(
+    x=distance_mean,  # Distance Mean 막대의 끝에 이모지를 추가
+    y='Distance Mean',
+    text='🏃‍♂️',
+    showarrow=False,
+    xanchor='left',
+    yanchor='middle',
+    xshift=30,  # 막대 끝에서 약간 오른쪽에 이모지를 표시
+    font=dict(size=60)  # 이모지 크기 조절
+)
+
+fig = fig.add_annotation(
+    x=branch_2_mean,  # Branch_2 Mean 막대의 끝에 이모지를 추가
+    y='Branch_2 Mean',
+    text='🏃‍♂️',
+    showarrow=False,
+    xanchor='left',
+    yanchor='middle',
+    xshift=30,  # 막대 끝에서 약간 오른쪽에 이모지를 표시
+    font=dict(size=60)  # 이모지 크기 조절
+)
+
+# 그래프 레이아웃 설정
+fig = fig.update_layout(
+    title=dict(
+        text='Distance',
+        x=0.5,  # 타이틀을 그래프 가운데로 설정
+        y=0.95,  # 타이틀을 그래프 상단에 가깝게 설정
+        font=dict(size=35)  # 타이틀 폰트 크기를 35로 설정
+    ),
+    xaxis_title='Distance (m)',
+    yaxis_title='',
+    yaxis=dict(autorange="reversed"),  # y축 순서 뒤집기 (가로 막대그래프일 때)
+    bargap=0.6,  # 막대 사이 간격 설정
+    plot_bgcolor='white',  # 그래프 배경색을 흰색으로 설정
+    paper_bgcolor='white',  # 전체 배경색을 흰색으로 설정
+    margin=dict(t=100)  # 상단 여백을 100으로 설정
+)
+
+# 그래프 보여주기
+fig.show()
+```
+
+## Row
+IOWA 주립 대학교와 Ames 도시의 주택이 떨어진 거리의 평균은 5.57km 입니다.
+
+Branch 2 지역의 주택이 대학교와 떨어진 평균 거리는 3.41km 입니다.
+Ames 도시 주택에 비해 평균 2.16km 더 가까운 지역입니다.
+
+
+
+# 페이지 3
+```{python}
+tot_1st = ames.query('Second_Flr_SF == False') \
+               .agg(count =('Second_Flr_SF','count'))
+tot_1st = tot_1st['Second_Flr_SF'][0]
+
+tot_2nd = ames.query('Second_Flr_SF == True') \
+               .agg(count =('Second_Flr_SF','count'))
+tot_2nd = tot_2nd['Second_Flr_SF'][0]
+
+
+b3_1st = ames.query('Branch_Number == "Branch_3" & Second_Flr_SF == False') \
+               .agg(count =('Branch_Number','count'))
+b3_1st = b3_1st['Branch_Number'][0]
+
+b3_2nd = ames.query('Branch_Number == "Branch_3" & Second_Flr_SF == True') \
+               .agg(count =('Branch_Number','count'))
+b3_2nd = b3_2nd['Branch_Number'][0]
+
+b3_1 = f"{b3_1st} / {tot_1st}"
+b3_2 = f"{b3_2nd} / {tot_2nd}"
+```
+
+## Row
+
+```{python}
+#| content: valuebox
+#| title: "1st Floor in Branch 3"
+dict(
+  icon = "house",
+  color = "#F7FEAE",
+  value = b3_1
+)
+```
+
+```{python}
+#| content: valuebox
+#| title: "2nd Floor in Branch 3"
+dict(
+  icon = "houses",
+  color = "#F7FEAE",
+  value = b3_2
+)
+```
+
+## Row 
+[Branch 3 지역]
+
+1층 집의 갯수와 2층 집의 갯수가 202채 차이로 1층 집이 더 많습니다.
+
+## Row
+
+```{python}
+import pandas as pd
+import plotly.graph_objects as go
+
+# Distance_m의 전체 평균 계산
+distance_mean = ames['Distance_m'].mean()
+
+# Branch_3의 평균 Distance_m 계산
+branch_3_mean = ames.query('Branch_Number == "Branch_3"')['Distance_m'].mean()
+
+# 막대그래프 그리기
+fig = go.Figure()
+
+fig = fig.add_trace(go.Bar(
+    x=[distance_mean, branch_3_mean],  # x축에 평균값을 설정
+    y=['Distance Mean', 'Branch_3 Mean'],  # y축에 레이블을 설정
+    orientation='h',  # 가로 막대그래프 설정
+    marker=dict(color=['#058092', '#9BD8A4']),  # 막대 색상 설정
+    text=[f"{distance_mean:,.2f}", f"{branch_3_mean:,.2f}"],  # 텍스트로 값 설정
+    textposition='inside',  # 텍스트 위치를 막대 안으로 설정
+    insidetextanchor='middle',  # 텍스트를 막대 가운데 정렬
+    textfont=dict(size=20)  # 텍스트 크기 설정
+))
+
+# 이모지 추가 (각각의 막대 끝에)
+fig = fig.add_annotation(
+    x=distance_mean,  # Distance Mean 막대의 끝에 이모지를 추가
+    y='Distance Mean',
+    text='🏃‍♂️',
+    showarrow=False,
+    xanchor='left',
+    yanchor='middle',
+    xshift=30,  # 막대 끝에서 약간 오른쪽에 이모지를 표시
+    font=dict(size=60)  # 이모지 크기 조절
+)
+
+fig = fig.add_annotation(
+    x=branch_3_mean,  # Branch_3 Mean 막대의 끝에 이모지를 추가
+    y='Branch_3 Mean',
+    text='🏃‍♂️',
+    showarrow=False,
+    xanchor='left',
+    yanchor='middle',
+    xshift=30,  # 막대 끝에서 약간 오른쪽에 이모지를 표시
+    font=dict(size=60)  # 이모지 크기 조절
+)
+
+# 그래프 레이아웃 설정
+fig = fig.update_layout(
+    title=dict(
+        text='Distance',
+        x=0.5,  # 타이틀을 그래프 가운데로 설정
+        y=0.95,  # 타이틀을 그래프 상단에 가깝게 설정
+        font=dict(size=35)  # 타이틀 폰트 크기를 35로 설정
+    ),
+    xaxis_title='Distance (m)',
+    yaxis_title='',
+    yaxis=dict(autorange="reversed"),  # y축 순서 뒤집기 (가로 막대그래프일 때)
+    bargap=0.6,  # 막대 사이 간격 설정
+    plot_bgcolor='white',  # 그래프 배경색을 흰색으로 설정
+    paper_bgcolor='white',  # 전체 배경색을 흰색으로 설정
+    margin=dict(t=100)  # 상단 여백을 100으로 설정
+)
+
+# 그래프 보여주기
+fig.show()
+```
+
+## Row
+IOWA 주립 대학교와 Ames 도시의 주택이 떨어진 거리의 평균은 5.57km 입니다.
+
+Branch 3 지역의 주택이 대학교와 떨어진 평균 거리는 8.08km 입니다.
+Ames 도시 주택에 비해 평균 2.50km 더 떨어진 지역입니다.
+
+
+# 페이지 4
+```{python}
+tot_1st = ames.query('Second_Flr_SF == False') \
+               .agg(count =('Second_Flr_SF','count'))
+tot_1st = tot_1st['Second_Flr_SF'][0]
+
+tot_2nd = ames.query('Second_Flr_SF == True') \
+               .agg(count =('Second_Flr_SF','count'))
+tot_2nd = tot_2nd['Second_Flr_SF'][0]
+
+
+b4_1st = ames.query('Branch_Number == "Branch_4" & Second_Flr_SF == False') \
+               .agg(count =('Branch_Number','count'))
+b4_1st = b4_1st['Branch_Number'][0]
+
+b4_2nd = ames.query('Branch_Number == "Branch_4" & Second_Flr_SF == True') \
+               .agg(count =('Branch_Number','count'))
+b4_2nd = b4_2nd['Branch_Number'][0]
+
+b4_1 = f"{b4_1st} / {tot_1st}"
+b4_2 = f"{b4_2nd} / {tot_2nd}"
+```
+
+## Row
+
+```{python}
+#| content: valuebox
+#| title: "1st Floor in Branch 4"
+dict(
+  icon = "house",  
+  color = "#F7FEAE",
+  value = b4_1
+)
+
+```
+
+```{python}
+#| content: valuebox
+#| title: "2nd Floor in Branch 4"
+dict(
+  icon = "houses",  
+  color = "#F7FEAE",
+  value = b4_2
+)
+```
+
+
+## Row 
+[Branch 4 지역]
+
+1층 집의 갯수와 2층 집의 갯수가 26채 차이로 비슷한 수치입니다.
+
+## Row
+
+```{python}
+import pandas as pd
+import plotly.graph_objects as go
+
+# Distance_m의 전체 평균 계산
+distance_mean = ames['Distance_m'].mean()
+
+# Branch_4의 평균 Distance_m 계산
+branch_4_mean = ames.query('Branch_Number == "Branch_4"')['Distance_m'].mean()
+
+# 막대그래프 그리기
+fig = go.Figure()
+
+fig = fig.add_trace(go.Bar(
+    x=[distance_mean, branch_4_mean],  # x축에 평균값을 설정
+    y=['Distance Mean', 'Branch_4 Mean'],  # y축에 레이블을 설정
+    orientation='h',  # 가로 막대그래프 설정
+    marker=dict(color=['#058092', '#9BD8A4']),  # 막대 색상 설정
+    text=[f"{distance_mean:,.2f}", f"{branch_4_mean:,.2f}"],  # 텍스트로 값 설정
+    textposition='inside',  # 텍스트 위치를 막대 안으로 설정
+    insidetextanchor='middle',  # 텍스트를 막대 가운데 정렬
+    textfont=dict(size=20)  # 텍스트 크기 설정
+))
+
+# 이모지 추가 (각각의 막대 끝에)
+fig = fig.add_annotation(
+    x=distance_mean,  # Distance Mean 막대의 끝에 이모지를 추가
+    y='Distance Mean',
+    text='🏃‍♂️',
+    showarrow=False,
+    xanchor='left',
+    yanchor='middle',
+    xshift=30,  # 막대 끝에서 약간 오른쪽에 이모지를 표시
+    font=dict(size=60)  # 이모지 크기 조절
+)
+
+fig = fig.add_annotation(
+    x=branch_4_mean,  # Branch_4 Mean 막대의 끝에 이모지를 추가
+    y='Branch_4 Mean',
+    text='🏃‍♂️',
+    showarrow=False,
+    xanchor='left',
+    yanchor='middle',
+    xshift=30,  # 막대 끝에서 약간 오른쪽에 이모지를 표시
+    font=dict(size=60)  # 이모지 크기 조절
+)
+
+# 그래프 레이아웃 설정
+fig = fig.update_layout(
+    title=dict(
+        text='Distance',
+        x=0.5,  # 타이틀을 그래프 가운데로 설정
+        y=0.95,  # 타이틀을 그래프 상단에 가깝게 설정
+        font=dict(size=35)  # 타이틀 폰트 크기를 35로 설정
+    ),
+    xaxis_title='Distance (m)',
+    yaxis_title='',
+    yaxis=dict(autorange="reversed"),  # y축 순서 뒤집기 (가로 막대그래프일 때)
+    bargap=0.6,  # 막대 사이 간격 설정
+    plot_bgcolor='white',  # 그래프 배경색을 흰색으로 설정
+    paper_bgcolor='white',  # 전체 배경색을 흰색으로 설정
+    margin=dict(t=100)  # 상단 여백을 100으로 설정
+)
+
+# 그래프 보여주기
+fig.show()
+```
+
+## Row
+IOWA 주립 대학교와 Ames 도시의 주택이 떨어진 거리의 평균은 5.57km 입니다.
+
+Branch 4 지역의 주택이 대학교와 떨어진 평균 거리는 5.24km 입니다.
+Ames 도시 주택에 비해 평균 333m 더 가까운 지역입니다.

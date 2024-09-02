@@ -1,0 +1,174 @@
+---
+title: "Ames, Iowa"
+author: "Group 7"
+format: 
+  dashboard:
+    nav-buttons:
+      - icon: github
+        href: https://github.com/AhyeongJ/lsbigdata_project1
+---
+```{python}
+import os
+cwd = os.getcwd()
+print(cwd)
+```
+
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns 
+
+house_price = pd.read_csv("./data/houseprice-with-lonlat.csv")
+house_price = house_price.iloc[:,1:]
+house_price['Neighborhood'].unique()
+```
+
+
+
+```{python}
+# Group 별 차트 1  
+
+job = pd.read_csv("./data/Occupations.csv")
+job = job.iloc[:, :4]
+job_group = job.groupby('Group', as_index = False)\
+               .agg(n = ('Group', 'count'))
+
+import plotly.express as px
+
+# 파이 차트 생성
+fig = px.pie(job_group, names='Group', values='n',
+              color_discrete_sequence=px.colors.sequential.Cividis_r)
+
+fig.update_traces(hole=.4, textinfo='percent')
+
+
+# 레이아웃 설정
+fig.update_layout(
+    title={'text': "<span style='color:black;font-weight:bold;'>Pie Chart 1</span>", 'x': 0.5, 'xanchor': 'center'},
+    annotations=[dict(text='Group', x=0.5, y=0.5, font_size=20, showarrow=False)],
+    legend=dict(
+        orientation="h",  # 범례를 수평으로 배치
+        yanchor="top",    # 범례를 상단에 맞추기
+        y=-0.2,           # 차트 아래로 범례를 이동
+        xanchor="center", # 범례를 수평 중앙에 맞추기
+        x=0.5             # 범례를 수평 중앙에 맞추기
+    )
+)
+```
+
+
+```{python}
+job2 = job.query('Group == "Management, Business, Science, & Arts Occupations"')
+subgroup = job2.groupby('Subgroup', as_index = False)\
+               .agg(n = ('Subgroup', 'count'))
+
+
+fig = px.pie(subgroup, names='Subgroup', values='n',
+              color_discrete_sequence=px.colors.sequential.Cividis_r)
+
+fig.update_traces(hole=.4, textinfo='percent')
+
+
+# 레이아웃 설정
+fig.update_layout(
+    title={'text': "<span style='color:black;font-weight:bold;'>Pie Chart 2 - Management, Business, Science, & Arts Occupations </span>", 'x': 0.5, 'xanchor': 'center'},
+    annotations=[dict(text='Chart2', x=0.5, y=0.5, font_size=20, showarrow=False)],
+    legend=dict(
+        orientation="h",  # 범례를 수평으로 배치
+        yanchor="top",    # 범례를 상단에 맞추기
+        y=-0.2,           # 차트 아래로 범례를 이동
+        xanchor="center", # 범례를 수평 중앙에 맞추기
+        x=0.5             # 범례를 수평 중앙에 맞추기
+    )
+)
+```
+
+
+<아이오와 에임즈 지도>
+```{python}
+import geopandas as gpd
+import fiona
+import os
+import matplotlib.pyplot as plt
+from shapely.geometry import Point
+import osmnx as ox
+
+
+user_name = os.getlogin()
+user_name
+
+gdb_path = f"C:\\Users\\{user_name}\\Desktop\\JoinedData.gdb\\a00000009.gdbtable"
+
+gdf = gpd.read_file(gdb_path)
+print(gdf.columns)
+
+iowa_gdf = gdf[gdf['State_Name'] == 'Iowa']
+iowa_gdf["geometry"]
+
+print(iowa_gdf.columns)
+gdf["geometry"]
+print(gdf.describe(include='all'))
+iowa_gdf.to_file(f"C:\\Users\\{user_name}\\Desktop\\iowa_block_groups.geojson", driver="GeoJSON")
+
+
+#메타 폴리곤으로 되어 있는 lon,lat 값 때문에 plt.plot 낫 이지
+#gdf.plot(colum,cmap,color,edgecolor,alpha,figsize)
+
+iowa_gdf = gpd.read_file(f"C:\\Users\\{user_name}\\Desktop\\iowa_block_groups.geojson")
+bgm = gdf.plot(color='lightgrey', edgecolor='grey', alpha=0.6, figsize=(10, 10))
+
+iowa_gdf.plot(ax=bgm, color='red', edgecolor='red', linewidth=1.5)
+
+plt.show()
+plt.clf()
+#묶인거 제거하기
+#알래스카,하와이 제거 하기
+#미국 지도에 아이오와 찍기
+#아이오와 구획별 경계 지도에 표시 해보기
+#long,lat 으로 구획 구분
+gdf[gdf['State_Name'] == 'Puerto Rico']
+gdf['State_Name'].unique()
+island = ["Hawaii", "Alaska","Puerto Rico"]
+
+mainland_gdf = gdf[~gdf['State_Name'].isin(island)]
+
+bgm = mainland_gdf.plot(color='lightgrey', edgecolor='grey', alpha=0.6, figsize=(10, 10))
+iowa_gdf.plot(ax=bgm, color='green', edgecolor='green', linewidth=1.5)
+plt.show()
+plt.clf()
+
+
+iowa_gdf.plot( color='None', edgecolor='green', linewidth=0.1)
+plt.xlim=([-104.5,-104.2])
+plt.ylim=([50.8,51.5])
+'''
+latitude = 53.5508
+longitude = -101.80
+point = Point(longitude, latitude)  # 경도, 위도 순서로 입력
+containing_block = gdf[gdf.contains(point)]
+'''
+plt.clf()
+iowa_gdf.plot( color='None', edgecolor='green', linewidth=1.5)
+
+iowa_gdf.columns
+
+ames_gdf = iowa_gdf[iowa_gdf.apply(lambda row: row.astype(str).str.contains('Ames', case=False).any(), axis=1)]
+print(ames_gdf)
+
+
+ames_gdf = ox.geocode_to_gdf("Ames, Iowa, USA")
+
+ames_blocks = iowa_gdf[iowa_gdf.intersects(ames_gdf.unary_union)]
+
+ames_blocks.plot(color='None', edgecolor='green', linewidth=0.1)
+plt.show()
+```
+
+```{python}
+import folium
+folium.Map(location = [42, -93],   # 지도 중심 좌표
+           zoom_start = 11,
+           tiles = 'cartodbpositron')      
+```
