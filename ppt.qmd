@@ -1,0 +1,79 @@
+---
+title: "쿼토 ppt 만들기"
+author: "이태현"
+format:
+    revealjs:
+        incremental: false
+        theme: sky
+---
+
+## 문제 1 {.smaller}
+
+:::{.incremental}
+
+- Turn off alarm
+- Get out of bed
+- 2개 #은 슬라이드라는 뜻
+- incremental를 fales를 하면 해당 슬라이드처럼 묶어줘야 애니메이션 적용이 된다.
+- https://quarto.org/docs/presentations/revealjs/ 링크
+:::
+
+## 문제 2 {.scrollable}
+
+:::: {.columns}
+
+::: {.column width="40%"}
+이것은 본문 입니다.
+
+이미지도 들어간다
+
+```{python}
+#| echo: true
+#| code-line-numbers: "4-5"
+import numpy as np # <1>
+import matplotlib.pyplot as plt # <2>
+
+x = np.arange(10)
+y = x**2
+
+```
+1. 넘파이 로드
+2. 그래프를 위한 로드
+
+:::
+
+::: {.column width="60%"}
+
+```{python}
+plt.scatter(x,y)
+```
+
+- 아이템1
+- 아이템2
+    - 서브 아이템 1
+    - 서브 아이템 2
+:::
+
+::::
+
+## 문제 3
+일반 문장^[풋 노트는 다음과 같이 표시]은 이렇게 표시
+
+
+::: aside
+
+이렇게 따로 표시
+
+:::
+
+## 탭셋
+::: {.panel-tabset}
+
+### `Tab A`
+abcd
+
+### Tab B
+asdf
+
+:::
+
